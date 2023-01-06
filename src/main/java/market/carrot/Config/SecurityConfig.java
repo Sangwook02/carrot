@@ -31,9 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/login-process")
+                    .usernameParameter("email")
                     .defaultSuccessUrl("/items")
                     .failureUrl("/login/failure")
-                    .usernameParameter("email")
                 .and()
                 .csrf().disable();
     }
