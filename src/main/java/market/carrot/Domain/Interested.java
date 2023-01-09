@@ -11,14 +11,11 @@ import javax.validation.constraints.NotEmpty;
 @Table(name = "interested")
 public class Interested {
     @Id @GeneratedValue
-    @Column(name = "ID")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    @NotEmpty
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "ITEM_ID")
-    @NotEmpty
+    @JoinColumn(name = "item_id")
     private Item item;
 }

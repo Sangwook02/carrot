@@ -30,4 +30,7 @@ public class ItemService {
     public Item findById(Long id) {
         return itemRepository.findById(id);
     }
+    public List<Item> findByUser(Long id) {
+        return itemRepository.findByUser(id);
+    }
 }

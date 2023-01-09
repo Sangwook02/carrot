@@ -27,8 +27,12 @@ public class ItemRepository {
     public List<Item> findAll(){
         return em.createQuery("select i from Item i", Item.class).getResultList();
     }
-
     public Item findById(Long id) {
         return em.find(Item.class, id);
+    }
+    public List<Item> findByUser(Long id) {
+        return em.createQuery("select i from Item i join i.user u where u.id = :id")
+                .setParameter("id",id)
+                .getResultList();
     }
 }
