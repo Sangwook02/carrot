@@ -11,24 +11,25 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @Table(name = "item")
 public class Item {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
-    @NotEmpty
-    private Long images;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "itemimages_id")
+    private ItemImages itemImages;
     @NotEmpty
     private String name;
-    @NotEmpty
-    private Enum<Category> category;
-    @NotEmpty
+//    @NotEmpty
+    @Enumerated(EnumType.STRING)
+    private Category category;
+//    @NotEmpty
     private int price;
-    @NotEmpty
     private int liked;
-    @NotEmpty
+//    @NotEmpty
     private LocalDateTime time;
-    @NotEmpty
+//    @NotEmpty
     private boolean status;
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "user_id")
     private User user;
 }
