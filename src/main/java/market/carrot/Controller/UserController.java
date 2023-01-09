@@ -3,8 +3,11 @@ package market.carrot.Controller;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import market.carrot.Domain.Item;
 import market.carrot.Domain.User;
 import market.carrot.Repository.UserRepository;
+import market.carrot.Service.InterestService;
+import market.carrot.Service.ItemService;
 import market.carrot.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,12 +16,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private ItemService itemService;
+    @Autowired
+    private InterestService interestService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -97,5 +105,22 @@ public class UserController {
     static class UpdateUserRequest {
         private String image;
         private String nickname;
+    }
+    /*
+    판매내역
+     */
+    @GetMapping("/user/items")
+    public @ResponseBody List<Item> userItems(Principal principal) {
+        User user = userService.findOne(principal.getName());
+        return itemService.findByUser(user.getId());
+    }
+
+    /*
+    관심 목록 조회
+     */
+    @GetMapping("/user/interest")
+    public @ResponseBody List<Item> userInterest(Principal principal) {
+        User user = userService.findOne(principal.getName());
+        return interestService.findByUser(user.getId());
     }
 }
