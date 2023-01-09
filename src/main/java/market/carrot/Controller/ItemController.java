@@ -43,7 +43,7 @@ public class ItemController {
         i.setName(itemDto.getName());
         i.setPrice(itemDto.getPrice());
         ItemImages itemImages = new ItemImages();
-        itemImages.setPath1(itemDto.getItemImages());
+        itemImages.setPath1(itemDto.getItemImages().getPath1());
         i.setItemImages(itemImagesService.create(itemImages));
         i.setCategory(itemDto.getCategory());
         LocalDateTime now = LocalDateTime.now();
@@ -60,10 +60,18 @@ public class ItemController {
     static class ItemDto{
         private String name;
         private int price;
-        private String itemImages;
+        private ItemImages itemImages;
         private Category category;
         private LocalDateTime time;
-        private boolean status;
+
+        public ItemDto itemToDto(Item item) {
+            ItemDto itemDto = new ItemDto();
+            itemDto.setName(item.getName());
+            itemDto.setItemImages(item.getItemImages());
+            itemDto.setCategory(item.getCategory());
+            itemDto.setTime(item.getTime());
+            return itemDto;
+        }
     }
 
     /**
@@ -78,12 +86,78 @@ public class ItemController {
      * 특정 상품 삭제
      */
     @DeleteMapping("/items/{item_id}")
-    public @ResponseBody String deleteItem(@PathVariable("item_id") Long id) {
-        itemService.delete(id);
-        return String.format("item %d deleted", id);
+    public @ResponseBody String deleteItem(Principal principal, @PathVariable("item_id") Long id) {
+        Item item = itemService.findById(id);
+        if (principal.getName() == item.getUser().getEmail()) {
+            // 상품 등록자인 경우에만 가능하도록 수정할 것.
+            itemService.delete(id);
+            return String.format("item %d deleted", id);
+        }
+
+        return "You do not have permission to delete this item";
     }
 
     /**
      * 특정 상품 수정
      */
+    @PatchMapping("/items/{item_id}")
+    public @ResponseBody Item updateItem(Principal principal ,@PathVariable ("item_id") Long id, @RequestBody ItemDto itemDto) {
+        Item item = itemService.findById(id);
+        if (userService.findOne(principal.getName()).getEmail() == item.getUser().getEmail()) {
+            ItemDto itemDto1 = new ItemDto();
+            if(itemDto1.itemToDto(item) != itemDto) {
+                item.setTime(LocalDateTime.now());
+                if(itemDto.getName() != null) {
+                    item.setName(itemDto.getName());
+                }
+                // 기존의 row에 수정된 path만 삽입
+                ItemImages itemImages = item.getItemImages();
+                if (itemDto.getItemImages() != null) {
+                    if (itemDto.getItemImages().getPath1() != null) {
+                        itemImages.setPath1(itemDto.getItemImages().getPath1());
+                    }
+                    if (itemDto.getItemImages().getPath2() != null) {
+                        itemImages.setPath2(itemDto.getItemImages().getPath2());
+                    }
+                    if (itemDto.getItemImages().getPath3() != null) {
+                        itemImages.setPath3(itemDto.getItemImages().getPath3());
+                    }
+                    if (itemDto.getItemImages().getPath4() != null) {
+                        itemImages.setPath4(itemDto.getItemImages().getPath4());
+                    }
+                    if (itemDto.getItemImages().getPath5() != null) {
+                        itemImages.setPath5(itemDto.getItemImages().getPath5());
+                    }
+                    if (itemDto.getItemImages().getPath6() != null) {
+                        itemImages.setPath6(itemDto.getItemImages().getPath6());
+                    }
+                    if (itemDto.getItemImages().getPath7() != null) {
+                        itemImages.setPath7(itemDto.getItemImages().getPath7());
+                    }
+                    if (itemDto.getItemImages().getPath8() != null) {
+                        itemImages.setPath8(itemDto.getItemImages().getPath8());
+                    }
+                    if (itemDto.getItemImages().getPath9() != null) {
+                        itemImages.setPath9(itemDto.getItemImages().getPath9());
+                    }
+                    if (itemDto.getItemImages().getPath10() != null) {
+                        itemImages.setPath10(itemDto.getItemImages().getPath10());
+                    }
+                    itemImagesService.create(itemImages);
+                }
+                if (itemDto.getCategory() != null) {
+                    item.setCategory(itemDto.getCategory());
+                }
+                if (itemDto.getPrice() != 0) {
+                    item.setPrice(itemDto.getPrice());
+                }
+            }
+        }
+        else {
+            return item;
+        }
+
+        itemService.create(item);
+        return item;
+    }
 }
