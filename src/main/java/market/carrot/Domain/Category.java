@@ -13,9 +13,4 @@ public enum Category {
     GAME, BEAUTY, PET, BOOKTICKETRECORD, PLANT,
     // ‘기타 중고물품’, ‘중고차’
     ETC, USEDCAR;
-
-//    @JsonCreator
-//    public static Category from(String category) {
-//        return Category.valueOf(category.toUpperCase());
-//    }
 }
