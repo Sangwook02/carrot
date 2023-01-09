@@ -1,10 +1,8 @@
 package market.carrot.Controller;
 
 import lombok.Data;
-import market.carrot.Domain.Category;
-import market.carrot.Domain.Item;
-import market.carrot.Domain.ItemImages;
-import market.carrot.Domain.User;
+import market.carrot.Domain.*;
+import market.carrot.Service.InterestService;
 import market.carrot.Service.ItemImagesService;
 import market.carrot.Service.ItemService;
 import market.carrot.Service.UserService;
@@ -23,6 +21,8 @@ public class ItemController {
     private ItemService itemService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private InterestService interestService;
     @Autowired
     private ItemImagesService itemImagesService;
 
@@ -159,5 +159,19 @@ public class ItemController {
 
         itemService.create(item);
         return item;
+    }
+    /**
+     * 관심 상품 등록
+     */
+    @PostMapping("/items/{item_id}")
+    public @ResponseBody String likeItem(Principal principal ,@PathVariable ("item_id") Long id) {
+        Interested interested = new Interested();
+        User user = userService.findOne(principal.getName());
+        interested.setUser(user);
+        Item item = itemService.findById(id);
+        interested.setItem(item);
+        interestService.save(interested);
+        item.setLiked(item.getLiked() + 1);
+        return "added";
     }
 }
