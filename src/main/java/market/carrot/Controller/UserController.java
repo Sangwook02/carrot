@@ -64,37 +64,33 @@ public class UserController {
     @GetMapping("user/profile")
     public @ResponseBody UserProfileDto myProfile(Principal principal) {
         User user = userService.findOne(principal.getName());
-        UserProfileDto userProfileDto = new UserProfileDto(user);
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userProfileDto.setNickname(user.getNickname());
+        userProfileDto.setImage(user.getImage());
         return userProfileDto;
     }
 
     /**
      * 마이페이지 PUT 요청
      */
-//    @PutMapping ("user/profile")
-//    public @ResponseBody String updateMyProfile(Principal principal, @RequestBody User request) {
-////        User user = userService.findOne(principal.getName());
-////        UserProfileDto userProfileDto1 = new UserProfileDto(user);
-////        if (image != user.getImage()) {
-////            userProfileDto1.setImage(image);
-////        }
-////        if(nickname != user.getNickname()) {
-////            userProfileDto1.setNickname(nickname);
-////        }
-//        System.out.println(request.getImage());
-//        return "userProfileDto1";
-//    }
+    @PatchMapping ("user/profile")
+    public @ResponseBody UserProfileDto updateMyProfile(Principal principal, @RequestBody UserProfileDto request) {
+        User user = userService.findOne(principal.getName());
+        if (request.image != user.getImage()) {
+            user.setImage(request.image);
+        }
+        if(request.nickname != user.getNickname()) {
+            user.setNickname(request.nickname);
+        }
+        userService.join(user);
+        return request;
+    }
 
     @Data
     @Setter
     static class UserProfileDto {
         private String image;
         private String nickname;
-
-        public UserProfileDto(User user) {
-            image = user.getImage();
-            nickname = user.getNickname();
-        }
     }
 
     @Data
