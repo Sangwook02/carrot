@@ -9,9 +9,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "item")
+@Table(name = "itemImages")
 public class ItemImages {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
     private String path1;
