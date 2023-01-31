@@ -1,6 +1,7 @@
 package market.carrot.Controller;
 
 import lombok.Data;
+import market.carrot.DTO.ItemListDTO;
 import market.carrot.Domain.*;
 import market.carrot.Service.InterestService;
 import market.carrot.Service.ItemImagesService;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 public class ItemController {
@@ -29,9 +33,16 @@ public class ItemController {
     /**
      * 상품 목록
      */
-    @GetMapping("/items")
-    public @ResponseBody List<Item> itemList() {
+    @GetMapping("/v1/items")
+    public @ResponseBody List<Item> itemListV1() {
         return itemService.findAll();
+    }
+    @GetMapping("/v2/items")
+    public @ResponseBody List<ItemListDTO> itemListV2() {
+        List<Item> items = itemService.findAll();
+        return items.stream()
+                .map(item -> new ItemListDTO(item))
+                .collect(toList());
     }
 
     /**
