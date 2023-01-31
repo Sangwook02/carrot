@@ -1,11 +1,10 @@
 package market.carrot.Controller;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
+import market.carrot.DTO.ItemListDTO;
 import market.carrot.Domain.Item;
 import market.carrot.Domain.User;
-import market.carrot.Repository.UserRepository;
 import market.carrot.Service.InterestService;
 import market.carrot.Service.ItemService;
 import market.carrot.Service.UserService;
@@ -14,10 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 public class UserController {
@@ -30,10 +29,10 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @GetMapping({ "", "/" })
-    public @ResponseBody String index() {
-        return "인덱스 페이지입니다.";
-    }
+//    @GetMapping({ "", "/" })
+//    public @ResponseBody String index() {
+//        return "인덱스 페이지입니다.";
+//    }
 
     /**
      * 로그인
@@ -109,17 +108,25 @@ public class UserController {
     /*
     판매내역
      */
-    @GetMapping("/user/items")
-    public @ResponseBody List<Item> userItems(Principal principal) {
+    @GetMapping("/v1/user/items")
+    public @ResponseBody List<Item> userItemsV1(Principal principal) {
         User user = userService.findOne(principal.getName());
         return itemService.findByUser(user.getId());
+    }
+    @GetMapping("/v2/user/items")
+    public @ResponseBody List<ItemListDTO> userItemsV2(Principal principal) {
+        User user = userService.findOne(principal.getName());
+        List<Item> items = itemService.findByUser(user.getId());
+        return items.stream()
+                .map(item -> new ItemListDTO(item))
+                .collect(toList());
     }
 
     /*
     관심 목록 조회
      */
-    @GetMapping("/user/interest")
-    public @ResponseBody List<Item> userInterest(Principal principal) {
+    @GetMapping("/v1/user/interest")
+    public @ResponseBody List<Item> userInterestV1(Principal principal) {
         User user = userService.findOne(principal.getName());
         return interestService.findByUser(user.getId());
     }
