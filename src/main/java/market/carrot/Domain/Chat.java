@@ -10,15 +10,13 @@ import javax.validation.constraints.NotEmpty;
 @Getter @Setter
 @Table(name = "chat")
 public class Chat {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    @NotEmpty
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "ITEM_ID")
-    @NotEmpty
+    @JoinColumn(name = "item_id")
     private Item item;
 }
