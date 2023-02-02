@@ -1,6 +1,7 @@
 package market.carrot.Domain;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -14,10 +15,10 @@ public class Item {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "itemimages_id")
     private ItemImages itemImages;
-    @NotEmpty
+//    @NotEmpty
     private String name;
 //    @NotEmpty
     @Enumerated(EnumType.STRING)
@@ -29,7 +30,7 @@ public class Item {
     private LocalDateTime time;
 //    @NotEmpty
     private boolean status;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }
