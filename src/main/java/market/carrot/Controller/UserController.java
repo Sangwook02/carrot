@@ -136,9 +136,17 @@ public class UserController {
     /*
     관심 목록 조회
      */
-    @GetMapping("/v1/user/interest")
-    public @ResponseBody List<Item> userInterestV1(Principal principal) {
+//    @GetMapping("/v1/user/interest")
+//    public @ResponseBody List<Item> userInterestV1(Principal principal) {
+//        User user = userService.findOne(principal.getName());
+//        return interestService.findByUser(user.getId());
+//    }
+
+    @GetMapping("/v2/user/interest")
+    public String userInterestV2(Principal principal, Model model) {
         User user = userService.findOne(principal.getName());
-        return interestService.findByUser(user.getId());
+        List<ItemListDTO> items = interestService.findByUser(user.getId());
+        model.addAttribute("items", items);
+        return "/v2/user/interest";
     }
 }

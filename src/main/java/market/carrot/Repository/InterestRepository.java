@@ -1,6 +1,7 @@
 package market.carrot.Repository;
 
 import lombok.RequiredArgsConstructor;
+import market.carrot.DTO.ItemListDTO;
 import market.carrot.Domain.Interested;
 import market.carrot.Domain.Item;
 import org.springframework.stereotype.Repository;
@@ -21,8 +22,12 @@ public class InterestRepository {
             em.merge(interested);
         }
     }
-    public List<Item> findByUser(Long id) {
-        return em.createQuery("select i from Interested i join i.user u where u.id = :id")
+    public List<ItemListDTO> findByUser(Long id) {
+        return em.createQuery("select new market.carrot.DTO.ItemListDTO(t.itemImages.path1, t.name, t.price, t.liked, t.status)" +
+                        " from Interested i "+
+                        " join i.user u "+
+                        " join i.item t" +
+                        " where u.id = :id", ItemListDTO.class)
                 .setParameter("id", id)
                 .getResultList();
     }

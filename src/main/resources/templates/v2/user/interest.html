@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>판매 내역</title>
+</head>
+<body>
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>관심</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="itemList : ${items}">
+                <td><a th:text="${itemList.image}">image</a></td>
+                <td><a th:text="${itemList.name}">상품명</a></td>
+                <td th:text="${itemList.price}">10000</td>
+                <td th:text="${itemList.liked}">10</td>
+                <td th:text="${itemList.status}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
