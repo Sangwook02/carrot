@@ -1,6 +1,7 @@
 package market.carrot.Service;
 
 import lombok.RequiredArgsConstructor;
+import market.carrot.DTO.ItemListDTO;
 import market.carrot.Domain.Interested;
 import market.carrot.Domain.Item;
 import market.carrot.Repository.InterestRepository;
@@ -20,7 +21,7 @@ public class InterestService {
         interestRepository.save(interested);
         return interested.getId();
     }
-    public List<Item> findByUser(Long id) {
+    public List<ItemListDTO> findByUser(Long id) {
         return interestRepository.findByUser(id);
     }
 }
