@@ -5,18 +5,19 @@ import lombok.Setter;
 import market.carrot.DTO.ItemListDTO;
 import market.carrot.Domain.Item;
 import market.carrot.Domain.User;
+import market.carrot.Repository.InterestRepository;
+import market.carrot.Repository.ItemListRepository;
 import market.carrot.Service.InterestService;
 import market.carrot.Service.ItemService;
 import market.carrot.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Controller
 public class UserController {
@@ -28,6 +29,8 @@ public class UserController {
     private InterestService interestService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private ItemListRepository itemListRepository;
 
 //    @GetMapping({ "", "/" })
 //    public @ResponseBody String index() {
@@ -113,21 +116,37 @@ public class UserController {
         User user = userService.findOne(principal.getName());
         return itemService.findByUser(user.getId());
     }
-    @GetMapping("/v2/user/items")
-    public @ResponseBody List<ItemListDTO> userItemsV2(Principal principal) {
+//    @GetMapping("/v2/user/items")
+//    public @ResponseBody List<ItemListDTO> userItemsV2(Principal principal) {
+//        User user = userService.findOne(principal.getName());
+//        List<Item> items = itemService.findByUser(user.getId());
+//        return items.stream()
+//                .map(item -> new ItemListDTO(item))
+//                .collect(toList());
+//    }
+
+    @GetMapping("/v3/user/items")
+    public String userItemsV3(Principal principal, Model model) {
         User user = userService.findOne(principal.getName());
-        List<Item> items = itemService.findByUser(user.getId());
-        return items.stream()
-                .map(item -> new ItemListDTO(item))
-                .collect(toList());
+        List<ItemListDTO> items = itemListRepository.findItembyUser(user.getId());
+        model.addAttribute("items", items);
+        return "/v3/user/items";
     }
 
     /*
     관심 목록 조회
      */
-    @GetMapping("/v1/user/interest")
-    public @ResponseBody List<Item> userInterestV1(Principal principal) {
+//    @GetMapping("/v1/user/interest")
+//    public @ResponseBody List<Item> userInterestV1(Principal principal) {
+//        User user = userService.findOne(principal.getName());
+//        return interestService.findByUser(user.getId());
+//    }
+
+    @GetMapping("/v2/user/interest")
+    public String userInterestV2(Principal principal, Model model) {
         User user = userService.findOne(principal.getName());
-        return interestService.findByUser(user.getId());
+        List<ItemListDTO> items = interestService.findByUser(user.getId());
+        model.addAttribute("items", items);
+        return "/v2/user/interest";
     }
 }
