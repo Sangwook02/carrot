@@ -3,6 +3,7 @@ package market.carrot.Controller;
 import lombok.Data;
 import lombok.Setter;
 import market.carrot.DTO.ItemListDTO;
+import market.carrot.DTO.UserProfileDto;
 import market.carrot.Domain.Item;
 import market.carrot.Domain.User;
 import market.carrot.Service.InterestService;
@@ -83,28 +84,16 @@ public class UserController {
     @PatchMapping ("user/profile")
     public @ResponseBody UserProfileDto updateMyProfile(Principal principal, @RequestBody UserProfileDto request) {
         User user = userService.findOne(principal.getName());
-        if (request.image != user.getImage()) {
-            user.setImage(request.image);
+        if (request.getImage() != user.getImage()) {
+            user.setImage(request.getImage());
         }
-        if(request.nickname != user.getNickname()) {
-            user.setNickname(request.nickname);
+        if(request.getNickname() != user.getNickname()) {
+            user.setNickname(request.getNickname());
         }
         userService.join(user);
         return request;
     }
 
-    @Data
-    @Setter
-    static class UserProfileDto {
-        private String image;
-        private String nickname;
-    }
-
-    @Data
-    static class UpdateUserRequest {
-        private String image;
-        private String nickname;
-    }
     /*
     판매내역
      */
