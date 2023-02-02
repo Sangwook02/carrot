@@ -1,9 +1,7 @@
 package market.carrot.DTO;
 
-import lombok.Builder;
+
 import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import market.carrot.Domain.Item;
 
 @Data
