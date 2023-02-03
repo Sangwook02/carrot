@@ -1,7 +1,9 @@
 package market.carrot.Controller;
 
-import lombok.Data;
+import market.carrot.DTO.CreateItemDTO;
 import market.carrot.DTO.ItemListDTO;
+import market.carrot.DTO.ReadItemDTO;
+import market.carrot.DTO.ResponseItemDTO;
 import market.carrot.Domain.*;
 import market.carrot.Service.InterestService;
 import market.carrot.Service.ItemImagesService;
@@ -48,7 +50,7 @@ public class ItemController {
      * 상품 등록
      */
     @PostMapping(value = "items/new",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String createItem(Principal principal, @RequestBody ItemDto itemDto) {
+    public @ResponseBody String createItem(Principal principal, @RequestBody CreateItemDTO itemDto) {
         Item i = new Item();
         i.setName(itemDto.getName());
         i.setPrice(itemDto.getPrice());
@@ -66,30 +68,14 @@ public class ItemController {
         return "new item made";
     }
 
-    @Data
-    static class ItemDto{
-        private String name;
-        private int price;
-        private ItemImages itemImages;
-        private Category category;
-        private LocalDateTime time;
-
-        public ItemDto itemToDto(Item item) {
-            ItemDto itemDto = new ItemDto();
-            itemDto.setName(item.getName());
-            itemDto.setItemImages(item.getItemImages());
-            itemDto.setCategory(item.getCategory());
-            itemDto.setTime(item.getTime());
-            return itemDto;
-        }
-    }
-
     /**
      * 특정 상품 조회
      */
-    @GetMapping("/items/{item_id}")
-    public @ResponseBody Item itemList(@PathVariable("item_id") Long id) {
-        return itemService.findById(id);
+    @GetMapping("/v1/items/{item_id}")
+    public @ResponseBody ResponseItemDTO itemListV1(@PathVariable("item_id") Long id) {
+        ReadItemDTO tmp = itemService.findByIdV2(id);
+        ResponseItemDTO responseItemDTO = new ResponseItemDTO(tmp);
+        return responseItemDTO;
     }
 
     /**
@@ -111,10 +97,10 @@ public class ItemController {
      * 특정 상품 수정
      */
     @PatchMapping("/items/{item_id}")
-    public @ResponseBody Item updateItem(Principal principal ,@PathVariable ("item_id") Long id, @RequestBody ItemDto itemDto) {
+    public @ResponseBody Item updateItem(Principal principal ,@PathVariable ("item_id") Long id, @RequestBody CreateItemDTO itemDto) {
         Item item = itemService.findById(id);
         if (userService.findOne(principal.getName()).getEmail() == item.getUser().getEmail()) {
-            ItemDto itemDto1 = new ItemDto();
+            CreateItemDTO itemDto1 = new CreateItemDTO();
             if(itemDto1.itemToDto(item) != itemDto) {
                 item.setTime(LocalDateTime.now());
                 if(itemDto.getName() != null) {
