@@ -29,6 +29,7 @@ public class Item {
 //    @NotEmpty
     private LocalDateTime time;
 //    @NotEmpty
+    // 판매중인지 여부
     private boolean status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
